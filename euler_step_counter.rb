@@ -7,22 +7,28 @@ class EulerStepCounter
     @current_angle = @previous_angle = @diff = @rotations = 0.0
   end
 
+  # Update with the latest euler angle reading
   def update(angle)
     @previous_angle = current_angle
     @current_angle = angle
 
-    if transition? && change_exceeds_threshold?
-      @rotations += 1;
+    if completed_a_revolution?
+      @rotations += 1
     end
 
     @diff = current_diff
   end
 
+  # The current position including rotations
   def linear_position
     current_angle + rotations
   end
 
 private
+
+  def completed_a_revolution?
+    transition? && change_exceeds_threshold?
+  end
 
   def current_diff
     current_angle - previous_angle
