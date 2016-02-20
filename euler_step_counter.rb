@@ -13,7 +13,7 @@ class EulerStepCounter
     @current_angle = angle
 
     if completed_a_revolution?
-      @rotations += 1
+      @rotations += direction
     end
 
     @diff = current_diff
@@ -25,6 +25,10 @@ class EulerStepCounter
   end
 
 private
+
+  def direction
+    sign_of(diff)
+  end
 
   def completed_a_revolution?
     transition? && change_exceeds_threshold?

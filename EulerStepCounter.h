@@ -11,6 +11,7 @@ class EulerStepCounter {
     bool completed_a_revolution();
     bool transitioned();
     bool change_exceeds_threshold();
+    float direction();
 
   private:
     float _current_angle;

@@ -9,7 +9,7 @@ void EulerStepCounter::update(float angle) {
   _current_angle = angle;
 
   if( completed_a_revolution() == true) {
-    _rotations = _rotations + 1.0;
+    _rotations = _rotations + direction();
   }
 
   _diff = current_diff();
@@ -28,6 +28,13 @@ float EulerStepCounter::absolute_diff() {
     return(current_diff());
   else
     return(_previous_angle - _current_angle);
+}
+
+float EulerStepCounter::direction() {
+  if(_diff < 0.0)
+    return(-1.0);
+  else
+    return(1.0);
 }
 
 bool EulerStepCounter::completed_a_revolution() {
