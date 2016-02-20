@@ -81,4 +81,9 @@ class EulerStepCounterTest < Test::Unit::TestCase
     @counter.update(0.8)
     assert_equal 2.8, @counter.linear_position
   end
+
+  def test_handles_anti_clockwise_start
+    @counter.update(0.8)
+    assert_equal 0.8, @counter.linear_position
+  end
 end
