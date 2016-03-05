@@ -1,6 +1,7 @@
 #include "TwizMonitor.h"
 #define AVERAGE_SAMPLE_SIZE 8
 #define TWIZ_ROTATION_MAX 65535
+#define TRANSITION_TOLERANCE 0.8
 
 TwizMonitor::TwizMonitor(EthernetUDP *udp, const char * address, int messageIndex, int scale) :
   _udp(udp),
@@ -25,10 +26,10 @@ void TwizMonitor::update() {
     _previousDecimal = getDecimal();
     _currentDecimal = ((float) raw_reading) / TWIZ_ROTATION_MAX;
 
-    if( _previousDecimal > 0.8 && _currentDecimal < 0.2 ) {
+    if( _previousDecimal > TRANSITION_TOLERANCE && _currentDecimal < (1-TRANSITION_TOLERANCE) ) {
       _rotations++;
       _Average.clear();
-    } else if( _previousDecimal < 0.2 && _currentDecimal > 0.8) {
+    } else if( _previousDecimal < (1-TRANSITION_TOLERANCE) && _currentDecimal > TRANSITION_TOLERANCE) {
       _rotations--;
       _Average.clear();
     }
