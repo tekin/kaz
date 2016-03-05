@@ -10,7 +10,7 @@ byte arduino_ip[] = { 192, 168, 1, 100 };
 int serverPort = 10000;
 
 EthernetUDP Udp;
-TwizMonitor twiz1_rotation(&Udp, "/rotation", 2, STEPS_PER_ROTATION);
+TwizMonitor twiz_z_rotation(&Udp, "/rotation", 2, STEPS_PER_ROTATION);
 AccelStepper stepper1(1, 7, 6);
 
 void setup() {
@@ -21,7 +21,7 @@ void setup() {
 }
 
 void loop() {
-  twiz1_rotation.update();
-  stepper1.moveTo(twiz1_rotation.read());
+  twiz_z_rotation.update();
+  stepper1.moveTo(twiz_z_rotation.read());
   stepper1.run();
 }
