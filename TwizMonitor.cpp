@@ -2,9 +2,10 @@
 #define AVERAGE_SAMPLE_SIZE 8
 #define TWIZ_ROTATION_MAX 65535
 
-TwizMonitor::TwizMonitor(EthernetUDP *udp, const char * address, int scale) :
+TwizMonitor::TwizMonitor(EthernetUDP *udp, const char * address, int messageIndex, int scale) :
   _udp(udp),
   _address(address),
+  _messageIndex(messageIndex),
   _scale(scale * -1),
   _Average(RunningAverage(AVERAGE_SAMPLE_SIZE)),
   _previousDecimal(0.0),
@@ -19,7 +20,7 @@ void TwizMonitor::update() {
     while (size--) {
       message.fill(_udp->read());
     }
-    unsigned int raw_reading = message.getInt(2);
+    unsigned int raw_reading = message.getInt(_messageIndex);
 
     _previousDecimal = getDecimal();
     _currentDecimal = ((float) raw_reading) / TWIZ_ROTATION_MAX;
@@ -39,4 +40,3 @@ void TwizMonitor::update() {
 int TwizMonitor::read() { return((getDecimal() + getRotations()) * _scale); }
 float TwizMonitor::getRotations() { return(_rotations); }
 float TwizMonitor::getDecimal() { return(_Average.getAverage()); }
-

@@ -3,12 +3,14 @@
 #include "TwizMonitor.h"
 #include <AccelStepper.h>
 
+#define STEPS_PER_ROTATION 200
+
 byte arduino_mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE,  0xED } ;
 byte arduino_ip[] = { 192, 168, 1, 100 };
 int serverPort = 10000;
 
 EthernetUDP Udp;
-TwizMonitor twiz1_rotation(&Udp, "/rotation", 200);
+TwizMonitor twiz1_rotation(&Udp, "/rotation", 2, STEPS_PER_ROTATION);
 AccelStepper stepper1(1, 7, 6);
 
 void setup() {

@@ -9,7 +9,7 @@
 
 class TwizMonitor {
   public:
-    TwizMonitor(EthernetUDP *udp, const char * address, int scale);
+    TwizMonitor(EthernetUDP *udp, const char * address, int messageIndex, int scale);
     void update();
     int read();
     float getDecimal();
@@ -18,6 +18,7 @@ class TwizMonitor {
   private:
     EthernetUDP *_udp;
     const char * _address;
+    int _messageIndex;
     int _scale;
     RunningAverage _Average;
     float _previousDecimal;
