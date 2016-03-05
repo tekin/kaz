@@ -19,14 +19,24 @@ void TwizMonitor::update() {
     while (size--) {
       message.fill(_udp->read());
     }
+    unsigned int raw_reading = message.getInt(2);
 
-    _Average.addValue((unsigned int) message.getInt(2));
+    _previousDecimal = getDecimal();
+    _currentDecimal = ((float) raw_reading) / TWIZ_ROTATION_MAX;
+
+    if( _previousDecimal > 0.8 && _currentDecimal < 0.2 ) {
+      _rotations++;
+      _Average.clear();
+    } else if( _previousDecimal < 0.2 && _currentDecimal > 0.8) {
+      _rotations--;
+      _Average.clear();
+    }
+
+    _Average.addValue(_currentDecimal);
   }
 }
 
-int TwizMonitor::read() { return(getScaled()); }
+int TwizMonitor::read() { return((getDecimal() + getRotations()) * _scale); }
 float TwizMonitor::getRotations() { return(_rotations); }
-float TwizMonitor::getRaw() { return(_Average.getAverage()); }
-float TwizMonitor::getDecimal() { return(getRaw() / TWIZ_ROTATION_MAX); }
-int TwizMonitor::getScaled() { return(getDecimal() * _scale); }
+float TwizMonitor::getDecimal() { return(_Average.getAverage()); }
 

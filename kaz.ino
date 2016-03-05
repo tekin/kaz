@@ -12,7 +12,6 @@ TwizMonitor twiz1_rotation(&Udp, "/rotation", 200);
 AccelStepper stepper1(1, 7, 6);
 
 void setup() {
-  Serial.begin(250000);
   Ethernet.begin(arduino_mac, arduino_ip);
   Udp.begin(serverPort);
   stepper1.setMaxSpeed(900.0);
@@ -21,7 +20,6 @@ void setup() {
 
 void loop() {
   twiz1_rotation.update();
-  Serial.println(twiz1_rotation.read());
   stepper1.moveTo(twiz1_rotation.read());
   stepper1.run();
 }
