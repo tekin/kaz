@@ -1,6 +1,6 @@
 
 #include <SPI.h>
-#include "TwizEulerMonitor.h"
+#include "TwizMonitor.h"
 #include <AccelStepper.h>
 
 byte arduino_mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE,  0xED } ;
@@ -8,10 +8,11 @@ byte arduino_ip[] = { 192, 168, 1, 100 };
 int serverPort = 10000;
 
 EthernetUDP Udp;
-TwizEulerMonitor twiz1_rotation(&Udp, "/rotation", 200);
+TwizMonitor twiz1_rotation(&Udp, "/rotation", 200);
 AccelStepper stepper1(1, 7, 6);
 
 void setup() {
+  Serial.begin(250000);
   Ethernet.begin(arduino_mac, arduino_ip);
   Udp.begin(serverPort);
   stepper1.setMaxSpeed(900.0);
@@ -20,6 +21,7 @@ void setup() {
 
 void loop() {
   twiz1_rotation.update();
-  stepper1.moveTo(twiz1_rotation.getZ());
+  Serial.println(twiz1_rotation.read());
+  stepper1.moveTo(twiz1_rotation.read());
   stepper1.run();
 }
