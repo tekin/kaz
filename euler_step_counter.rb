@@ -1,10 +1,10 @@
 class EulerStepCounter
   TRANSITION_TOLERANCE = 0.6
 
-  attr_reader :current_angle, :previous_angle, :diff, :rotations
+  attr_reader :current_angle, :previous_angle, :previous_diff, :rotations
 
   def initialize
-    @current_angle = @previous_angle = @diff = @rotations = 0.0
+    @current_angle = @previous_angle = @previous_diff = @rotations = 0.0
   end
 
   # Update with the latest euler angle reading
@@ -16,7 +16,7 @@ class EulerStepCounter
       @rotations += direction
     end
 
-    @diff = current_diff
+    @previous_diff = current_diff
   end
 
   # The current position including rotations
@@ -27,7 +27,7 @@ class EulerStepCounter
 private
 
   def direction
-    sign_of(diff)
+    sign_of(previous_diff)
   end
 
   def completed_a_revolution?
@@ -51,7 +51,7 @@ private
   end
 
   def transition?
-    sign_of(current_diff) != sign_of(diff)
+    sign_of(current_diff) != sign_of(previous_diff)
   end
 
   def change_exceeds_threshold?

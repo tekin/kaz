@@ -2,7 +2,7 @@
 
 #define EULER_TRANSITION_TOLERANCE 0.6
 
-EulerStepCounter::EulerStepCounter() :_previous_angle(0.0), _current_angle(0.0), _diff(0.0), _rotations(0.0) {}
+EulerStepCounter::EulerStepCounter() :_previous_angle(0.0), _current_angle(0.0), _previous_diff(0.0), _rotations(0.0) {}
 
 void EulerStepCounter::update(float angle) {
   _previous_angle = _current_angle;
@@ -12,7 +12,7 @@ void EulerStepCounter::update(float angle) {
     _rotations = _rotations + direction();
   }
 
-  _diff = current_diff();
+  _previous_diff = current_diff();
 }
 
 float EulerStepCounter::linear_position() {
@@ -31,7 +31,7 @@ float EulerStepCounter::absolute_diff() {
 }
 
 float EulerStepCounter::direction() {
-  if(_diff < 0.0)
+  if(_previous_diff < 0.0)
     return(-1.0);
   else
     return(1.0);
@@ -42,7 +42,7 @@ bool EulerStepCounter::completed_a_revolution() {
 }
 
 bool EulerStepCounter::transitioned() {
-  return(current_diff() < 0.0 && _diff > 0.0 || current_diff() > 0.0 && _diff < 0.0);
+  return(current_diff() < 0.0 && _previous_diff > 0.0 || current_diff() > 0.0 && _previous_diff < 0.0);
 }
 
 bool EulerStepCounter::change_exceeds_threshold() {

@@ -9,7 +9,7 @@ class EulerStepCounterTest < Test::Unit::TestCase
   def test_initializes_attributes
     assert_equal 0.0, @counter.current_angle
     assert_equal 0.0, @counter.previous_angle
-    assert_equal 0.0, @counter.diff
+    assert_equal 0.0, @counter.previous_diff
     assert_equal 0.0, @counter.rotations
   end
 

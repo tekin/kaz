@@ -16,7 +16,7 @@ class EulerStepCounter {
   private:
     float _current_angle;
     float _previous_angle;
-    float _diff;
+    float _previous_diff;
     float _rotations;
 };
 
