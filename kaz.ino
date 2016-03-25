@@ -6,7 +6,7 @@
 #define STEPS_PER_ROTATION 200
 
 byte arduino_mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE,  0xED } ;
-byte arduino_ip[] = { 192, 168, 1, 100 };
+byte arduino_ip[] = { 192, 168, 0, 100 };
 int serverPort = 10000;
 
 EthernetUDP Udp;
