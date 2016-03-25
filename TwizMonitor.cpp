@@ -1,5 +1,5 @@
 #include "TwizMonitor.h"
-#define AVERAGE_SAMPLE_SIZE 8
+#define AVERAGE_SAMPLE_SIZE 1
 #define TWIZ_ROTATION_MAX 65535
 #define TRANSITION_TOLERANCE 0.8
 
