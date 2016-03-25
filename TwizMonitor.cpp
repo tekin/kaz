@@ -7,7 +7,7 @@ TwizMonitor::TwizMonitor(EthernetUDP *udp, const char * address, int messageInde
   _udp(udp),
   _address(address),
   _messageIndex(messageIndex),
-  _scale(scale * -1),
+  _scale(scale),
   _Average(RunningAverage(AVERAGE_SAMPLE_SIZE)),
   _previousDecimal(0.0),
   _rotations(0)
