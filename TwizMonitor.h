@@ -8,6 +8,8 @@ class TwizMonitor {
     float getDecimal();
     float getRotations();
     void handleEulerMessage(unsigned int raw_reading);
+    void handleEulerMessage(float decimal);
+    void calculateRotations();
 
   private:
     int _scale;

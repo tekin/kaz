@@ -11,20 +11,18 @@
 
 byte arduino_mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE,  0xED } ;
 byte arduino_ip[] = { 192, 168, 0, 100 };
-
+int serverPort = 10000;
 bool calibarated = false;
 int stepperOffset = 0;
 
 EthernetUDP TwizUdp;
-int TwizUdpPort = 100;
 
 TwizMonitor twiz_monitor(STEPS_PER_ROTATION);
 AccelStepper stepper1(1, 6, 5);
 
 void setup() {
   Ethernet.begin(arduino_mac, arduino_ip);
-  TwizUdp.begin(TwizUdpPort);
-
+  TwizUdp.begin(serverPort);
   stepper1.setMaxSpeed(10000.0);
   stepper1.setAcceleration(10000.0);
 }
@@ -46,11 +44,10 @@ void updateStepperPosition() {
 }
 
 void handleOSCMessage() {
+  OSCMessage message;
   int size;
 
   if ((size = TwizUdp.parsePacket()) > 0) {
-    OSCMessage message;
-
     while (size--) {
       message.fill(TwizUdp.read());
     }

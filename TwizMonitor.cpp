@@ -9,10 +9,19 @@ TwizMonitor::TwizMonitor(int scale) :
   _rotations(0)
   { }
 
+void TwizMonitor::handleEulerMessage(float decimal) {
+  _previousDecimal = getDecimal();
+  _currentDecimal = decimal;
+  calculateRotations();
+}
+
 void TwizMonitor::handleEulerMessage(unsigned int raw_reading) {
   _previousDecimal = getDecimal();
   _currentDecimal = ((float) raw_reading) / TWIZ_ROTATION_MAX;
+  calculateRotations();
+}
 
+void TwizMonitor::calculateRotations() {
   if( _previousDecimal > TRANSITION_TOLERANCE && _currentDecimal < (1-TRANSITION_TOLERANCE) ) {
     _rotations++;
   } else if( _previousDecimal < (1-TRANSITION_TOLERANCE) && _currentDecimal > TRANSITION_TOLERANCE) {
