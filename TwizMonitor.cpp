@@ -1,5 +1,5 @@
 #include "TwizMonitor.h"
-#define AVERAGE_SAMPLE_SIZE 1
+
 #define TWIZ_ROTATION_MAX 65535
 #define TRANSITION_TOLERANCE 0.8
 #define EULER_ADDRESS "/twiz"
@@ -8,7 +8,6 @@
 TwizMonitor::TwizMonitor(EthernetUDP *udp, int scale) :
   _udp(udp),
   _scale(scale),
-  _Average(RunningAverage(AVERAGE_SAMPLE_SIZE)),
   _previousDecimal(0.0),
   _rotations(0)
   { }
@@ -36,15 +35,12 @@ void TwizMonitor::handleEulerMessage(OSCMessage &message) {
 
   if( _previousDecimal > TRANSITION_TOLERANCE && _currentDecimal < (1-TRANSITION_TOLERANCE) ) {
     _rotations++;
-    _Average.clear();
   } else if( _previousDecimal < (1-TRANSITION_TOLERANCE) && _currentDecimal > TRANSITION_TOLERANCE) {
     _rotations--;
-    _Average.clear();
-  }
 
-  _Average.addValue(_currentDecimal);
+  }
 }
 
 int TwizMonitor::read() { return((getDecimal() + getRotations()) * _scale); }
 float TwizMonitor::getRotations() { return(_rotations); }
-float TwizMonitor::getDecimal() { return(_Average.getAverage()); }
+float TwizMonitor::getDecimal() { return(_currentDecimal); }

@@ -4,7 +4,6 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 #include <OSCBundle.h>
-#include "RunningAverage.h"
 #include "EulerStepCounter.h"
 
 class TwizMonitor {
@@ -19,7 +18,6 @@ class TwizMonitor {
     void handleEulerMessage(OSCMessage &message);
     EthernetUDP *_udp;
     int _scale;
-    RunningAverage _Average;
     float _previousDecimal;
     float _currentDecimal;
     int _rotations;
