@@ -9,16 +9,15 @@
 
 class TwizMonitor {
   public:
-    TwizMonitor(EthernetUDP *udp, const char * address, int messageIndex, int scale);
+    TwizMonitor(EthernetUDP *udp, int scale);
     void update();
     int read();
     float getDecimal();
     float getRotations();
 
   private:
+    void handleEulerMessage(OSCMessage &message);
     EthernetUDP *_udp;
-    const char * _address;
-    int _messageIndex;
     int _scale;
     RunningAverage _Average;
     float _previousDecimal;

@@ -2,11 +2,11 @@
 #define AVERAGE_SAMPLE_SIZE 1
 #define TWIZ_ROTATION_MAX 65535
 #define TRANSITION_TOLERANCE 0.8
+#define EULER_ADDRESS "/twiz"
+#define EULER_Z_INDEX 2
 
-TwizMonitor::TwizMonitor(EthernetUDP *udp, const char * address, int messageIndex, int scale) :
+TwizMonitor::TwizMonitor(EthernetUDP *udp, int scale) :
   _udp(udp),
-  _address(address),
-  _messageIndex(messageIndex),
   _scale(scale),
   _Average(RunningAverage(AVERAGE_SAMPLE_SIZE)),
   _previousDecimal(0.0),
@@ -21,21 +21,28 @@ void TwizMonitor::update() {
     while (size--) {
       message.fill(_udp->read());
     }
-    unsigned int raw_reading = message.getInt(_messageIndex);
 
-    _previousDecimal = getDecimal();
-    _currentDecimal = ((float) raw_reading) / TWIZ_ROTATION_MAX;
-
-    if( _previousDecimal > TRANSITION_TOLERANCE && _currentDecimal < (1-TRANSITION_TOLERANCE) ) {
-      _rotations++;
-      _Average.clear();
-    } else if( _previousDecimal < (1-TRANSITION_TOLERANCE) && _currentDecimal > TRANSITION_TOLERANCE) {
-      _rotations--;
-      _Average.clear();
+    if(message.fullMatch(EULER_ADDRESS)) {
+      handleEulerMessage(message);
     }
-
-    _Average.addValue(_currentDecimal);
   }
+}
+
+void TwizMonitor::handleEulerMessage(OSCMessage &message) {
+  unsigned int raw_reading = message.getInt(EULER_Z_INDEX);
+
+  _previousDecimal = getDecimal();
+  _currentDecimal = ((float) raw_reading) / TWIZ_ROTATION_MAX;
+
+  if( _previousDecimal > TRANSITION_TOLERANCE && _currentDecimal < (1-TRANSITION_TOLERANCE) ) {
+    _rotations++;
+    _Average.clear();
+  } else if( _previousDecimal < (1-TRANSITION_TOLERANCE) && _currentDecimal > TRANSITION_TOLERANCE) {
+    _rotations--;
+    _Average.clear();
+  }
+
+  _Average.addValue(_currentDecimal);
 }
 
 int TwizMonitor::read() { return((getDecimal() + getRotations()) * _scale); }

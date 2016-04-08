@@ -13,7 +13,7 @@ bool calibarated = false;
 int stepperOffset = 0;
 
 EthernetUDP Udp;
-TwizMonitor twiz_z_rotation(&Udp, "/rotation", 2, STEPS_PER_ROTATION);
+TwizMonitor twiz_monitor(&Udp, STEPS_PER_ROTATION);
 AccelStepper stepper1(1, 6, 5);
 
 void setup() {
@@ -24,10 +24,10 @@ void setup() {
 }
 
 void loop() {
-  twiz_z_rotation.update();
+  twiz_monitor.update();
 
   if( calibarated == true ){
-    int new_position = twiz_z_rotation.read() - stepperOffset;
+    int new_position = twiz_monitor.read() - stepperOffset;
     stepper1.moveTo(new_position);
     stepper1.run();
   } else {
@@ -38,7 +38,7 @@ void loop() {
       stepperOffset -= stepper1.distanceToGo();
       // set the offset to be the difference between the current step poisition
       // and the position coming back from the Twiz
-      stepperOffset = twiz_z_rotation.read() - stepperOffset;
+      stepperOffset = twiz_monitor.read() - stepperOffset;
     } else {
       // Not reached the reset point, keep it moving
       if(stepper1.distanceToGo() == 0) {
