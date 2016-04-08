@@ -2,34 +2,14 @@
 
 #define TWIZ_ROTATION_MAX 65535
 #define TRANSITION_TOLERANCE 0.8
-#define EULER_ADDRESS "/twiz"
-#define EULER_Z_INDEX 2
 
-TwizMonitor::TwizMonitor(EthernetUDP *udp, int scale) :
-  _udp(udp),
+TwizMonitor::TwizMonitor(int scale) :
   _scale(scale),
   _previousDecimal(0.0),
   _rotations(0)
   { }
 
-void TwizMonitor::update() {
-  OSCMessage message;
-  int size;
-
-  if ((size = _udp->parsePacket()) > 0) {
-    while (size--) {
-      message.fill(_udp->read());
-    }
-
-    if(message.fullMatch(EULER_ADDRESS)) {
-      handleEulerMessage(message);
-    }
-  }
-}
-
-void TwizMonitor::handleEulerMessage(OSCMessage &message) {
-  unsigned int raw_reading = message.getInt(EULER_Z_INDEX);
-
+void TwizMonitor::handleEulerMessage(unsigned int raw_reading) {
   _previousDecimal = getDecimal();
   _currentDecimal = ((float) raw_reading) / TWIZ_ROTATION_MAX;
 
