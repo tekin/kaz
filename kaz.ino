@@ -96,6 +96,7 @@ void handleTwizData(OSCMessage &message) {
 // Handle for force calibration
 void handleForceCalibrate(OSCMessage &message) {
   calibrated = false;
+  stepperOffset = 0;
 }
 
 // Handler for the override data. Expects the value to be a float between 0.0 and 1.0.
