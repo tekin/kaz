@@ -14,11 +14,12 @@
 #define TWIZ_ADDRESS "/twiz"
 #define OVERRIDE_TOGGLE_ADDRESS "/1/fader1"
 #define OVERRIDE_SIGNAL_ADDRESS "/1/fader2"
+#define CALIBRATE_ADDRESS "/calibrate"
 
 byte arduino_mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE,  0xED } ;
 byte arduino_ip[] = { 192, 168, 0, 100 };
 
-bool calibarated = false;
+bool calibrated = false;
 bool override = false;
 int stepperOffset = 0;
 
@@ -40,7 +41,7 @@ void setup() {
 void loop() {
   handleOSCMessages();
 
-  if( calibarated == true ){
+  if( calibrated == true ){
     updateStepperPosition();
   } else {
     checkForCalibaration();
@@ -61,6 +62,9 @@ void handleOSCMessages() {
   if ((size = OverrideUdp.parsePacket()) > 0) {
     while (size--) { OverrideMessage.fill(OverrideUdp.read()); }
   }
+
+  // will set override to true if the toggle value is greater than 0.5
+  OverrideMessage.dispatch(CALIBRATE_ADDRESS, handleForceCalibrate);
 
   // will set override to true if the toggle value is greater than 0.5
   OverrideMessage.dispatch(OVERRIDE_TOGGLE_ADDRESS, handleOverrideToggle);
@@ -89,6 +93,11 @@ void handleTwizData(OSCMessage &message) {
   }
 }
 
+// Handle for force calibration
+void handleForceCalibrate(OSCMessage &message) {
+  calibrated = false;
+}
+
 // Handler for the override data. Expects the value to be a float between 0.0 and 1.0.
 void handleOverrideData(OSCMessage &message) {
   twiz_monitor.handleEulerMessage(message.getFloat(0));
@@ -107,7 +116,7 @@ void handleOverrideToggle(OSCMessage &message) {
 void checkForCalibaration() {
   if( digitalRead(HALL_SWITCH_PIN) == LOW ){
     // stepper has reached the reset point
-    calibarated = true;
+    calibrated = true;
     // adjust for any movement that hasn't been completed
     stepperOffset -= stepper1.distanceToGo();
     // set the offset to be the difference between the current step poisition
